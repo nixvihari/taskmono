@@ -6,6 +6,7 @@ import traceback
 
 DATETIME_FORMAT_STR = "%d-%m-%Y %H:%M:%S"
 
+# helper functions
 def usage():
     print('''
 Available options:
@@ -54,7 +55,7 @@ def printTasks(status=None):
     if status is None:
         statusPool = ('todo','done','in-progress')
     else:
-        statusPool = set(status)
+        statusPool = set([status])
     data = getJSONData()
 
     print('----------------------------------------------------------------------')
@@ -63,6 +64,12 @@ def printTasks(status=None):
         if task['status'] in statusPool:
             print(f'{id}  {task["description"]}\t{task["status"]}\t{task["createdAt"]}\t{task["updatedAt"]}')
 
+
+
+
+
+
+# functions
 
 def add():
     if len(argv) != 3:
@@ -155,6 +162,7 @@ def markInProgress():
     except:
         invalidArgsError()
     
+    taskId = str(taskId)
     data = getJSONData()
     if taskId not in data:
         print('Task does not exist')
@@ -162,9 +170,13 @@ def markInProgress():
 
     task = data[taskId]
     updatedTask = updateTaskProperties(task, status='in-progress')
+    data[taskId] = updatedTask
 
+    with open('data.json','w') as f:
+        json.dump(data,f, indent=4)
+        print(f'Task {taskId} marked in progress')
 
-    print(f'Task {taskId} marked in progress')
+    return None
 
 def markDone():
     if len(argv) != 3:
@@ -173,7 +185,22 @@ def markDone():
         taskId = int(argv[2])
     except:
         invalidArgsError()
-    print(f'task {taskId} marked done')
+    
+    taskId = str(taskId)
+    data = getJSONData()
+    if taskId not in data:
+        print('Task does not exist')
+        return None
+
+    task = data[taskId]
+    updatedTask = updateTaskProperties(task, status='done')
+    data[taskId] = updatedTask
+
+    with open('data.json','w') as f:
+        json.dump(data, f, indent=4)
+        print(f'task {taskId} marked done')
+    
+    return None
 
 
 
