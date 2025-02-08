@@ -117,7 +117,7 @@ def add():
         data = {1: newTask}
         with open(JSONPath,'w') as f:
             json.dump(data, f, indent=4)
-            print(f'First Task {taskName} added at index 1')
+            print(f'New Task "{taskName}" \nID: 1 \nADDED')
     else:
         with open(JSONPath, 'r+') as f:
             data = json.load(f)
