@@ -3,10 +3,14 @@
 from sys import argv, exit
 from datetime import datetime
 import json
+from json.decoder import JSONDecodeError
 import os
-import traceback 
 
 DATETIME_FORMAT_STR = "%d-%m-%Y %H:%M:%S"
+
+realpath = os.path.realpath(__file__)
+dirname = os.path.dirname(realpath)
+JSONPath = os.path.join(dirname,'data.json')
 
 # helper functions
 def usage():
@@ -56,8 +60,13 @@ def getIndexedData(data):
     return indexedData
 
 def getJSONData():
-    with open('data.json','r') as f:
-        return json.load(f)
+    with open(JSONPath,'r') as f:
+        try:
+            data = json.load(f)
+            return data
+        except JSONDecodeError:
+            print('Empty task list \nStart by adding a few tasks')
+            exit(0)
 
 def printTasks(status=None):
     tabSpace = '\t'
@@ -90,13 +99,13 @@ def add():
         argLengthError()
     taskName = argv[2]
     newTask = initTaskProperties(desc=taskName)
-    if os.stat('data.json').st_size == 0:
+    if os.stat(JSONPath).st_size == 0:
         data = {1: newTask}
-        with open('data.json','w') as f:
+        with open(JSONPath,'w') as f:
             json.dump(data, f, indent=4)
             print(f'First Task {taskName} added at index 1')
     else:
-        with open('data.json', 'r+') as f:
+        with open(JSONPath, 'r+') as f:
             data = json.load(f)
             lastIndex = int(list(data)[-1])
             newIndex = lastIndex + 1
@@ -124,7 +133,7 @@ def update():
     updatedTask = updateTaskProperties(task, desc=newName)
     data[task_id] = updatedTask
     
-    with open('data.json','w') as f:
+    with open(JSONPath,'w') as f:
         json.dump(data,f, indent=4)
     print(f'updated task {task_id} to {newName}')
 
@@ -148,7 +157,7 @@ def delete():
     
     ##re-index data after deletion
     indexedData = getIndexedData(data)
-    with open('data.json','w') as f:
+    with open(JSONPath,'w') as f:
         json.dump(indexedData, f, indent=4)
         print('\nDatabase Indexed')
     
@@ -201,7 +210,7 @@ def markInProgress():
     updatedTask = updateTaskProperties(task, status='in-progress')
     data[taskId] = updatedTask
 
-    with open('data.json','w') as f:
+    with open(JSONPath,'w') as f:
         json.dump(data,f, indent=4)
         print(f'Task {taskId} marked in progress')
 
@@ -225,7 +234,7 @@ def markDone():
     updatedTask = updateTaskProperties(task, status='done')
     data[taskId] = updatedTask
 
-    with open('data.json','w') as f:
+    with open(JSONPath,'w') as f:
         json.dump(data, f, indent=4)
         print(f'task {taskId} marked done')
     
@@ -234,6 +243,7 @@ def markDone():
 
 
 if __name__ == "__main__":
+    open(JSONPath,'a').close()
     args = {
         'add': add,
         'update': update,
