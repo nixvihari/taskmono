@@ -46,6 +46,12 @@ def updateTaskProperties(task,desc=None,status=None):
     taskUpdate['updatedAt'] = datetime.now().strftime(DATETIME_FORMAT_STR)
     return taskUpdate
 
+def getIndexedData(data):
+    tasks = data.values()
+    l = len(data)
+    indices = range(1,l+1)
+    indexedData = dict(zip(indices,tasks))
+    return indexedData
 
 def getJSONData():
     with open('data.json','r') as f:
@@ -60,6 +66,7 @@ def printTasks(status=None):
 
     print('----------------------------------------------------------------------')
     print('ID Description\tStatus\tCreated At\t\tUpdated At')
+    print('----------------------------------------------------------------------')
     for id, task in data.items():
         if task['status'] in statusPool:
             print(f'{id}  {task["description"]}\t{task["status"]}\t{task["createdAt"]}\t{task["updatedAt"]}')
@@ -90,7 +97,7 @@ def add():
             f.truncate(0)
             f.seek(0)
             json.dump(data,f, indent=4)
-            print(f'New Task {taskName} added at index {newIndex}')
+            print(f'New Task "{taskName}" \nID: {newIndex} \nADDED')
 
 def update():
     if len(argv) != 4:
@@ -123,7 +130,22 @@ def delete():
     except:
         invalidArgsError()
     
-    print(f'deleted task {task_id}')
+    task_id = str(task_id)
+    data = getJSONData()
+    if task_id not in data:
+        print('Task does not exist')
+        return None
+    
+    value = data.pop(task_id)
+    print(f'Task "{value['description']}" \nID: {task_id} \nStatus: {value['status']} \nX- DELETED -X.')
+    
+    ##re-index data after deletion
+    indexedData = getIndexedData(data)
+    with open('data.json','w') as f:
+        json.dump(indexedData, f, indent=4)
+        print('\nDatabase Indexed')
+    
+    return None
 
 def listTasks():
     if len(argv) == 2:
@@ -221,4 +243,5 @@ if __name__ == "__main__":
         action = str(argv[1])
         if action not in args:
             invalidArgsError()
+        
         args[action]()
