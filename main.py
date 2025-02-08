@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from sys import argv, exit
 from datetime import datetime
 import json
@@ -142,7 +144,7 @@ def delete():
         return None
     
     value = data.pop(task_id)
-    print(f'Task "{value['description']}" \nID: {task_id} \nStatus: {value['status']} \nX- DELETED -X.')
+    print(f'Task "{value["description"]}" \nID: {task_id} \nStatus: {value["status"]} \nX- DELETED -X.')
     
     ##re-index data after deletion
     indexedData = getIndexedData(data)
