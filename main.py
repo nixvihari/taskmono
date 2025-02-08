@@ -19,13 +19,14 @@ JSONPath = os.path.join(dirname,'data.json')
 
 def usage():
     print('''
-Available options:
+Options:
     add
     update
     delete
-    list-tasks :todo
-                done 
-                in-progress
+    list
+    list todo
+    list done 
+    list in-progress
     mark-in-progress
     mark-done
 ''')
@@ -33,12 +34,12 @@ Available options:
 
 
 def argLengthError():
-    print('too many or few arguments, use "python3 main.py help" to check usage')
+    print('too many or few arguments, use "taskmono help" to check usage')
     exit(0)
 
 
 def invalidArgsError():
-    print('invalid arguments, use "python3 main.py help" to check usage')
+    print('invalid arguments, use "taskmono help" to check usage')
     exit(0)
 
 
