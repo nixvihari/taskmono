@@ -58,18 +58,23 @@ def getJSONData():
         return json.load(f)
 
 def printTasks(status=None):
+    tabSpace = '\t'
     if status is None:
         statusPool = ('todo','done','in-progress')
     else:
         statusPool = set([status])
+        if len(status) > 7:
+            tabSpace = '\t\t'
     data = getJSONData()
 
-    print('----------------------------------------------------------------------')
-    print('ID Description\tStatus\tCreated At\t\tUpdated At')
-    print('----------------------------------------------------------------------')
+    print('-------------------------------------------------------------------------------------------')
+    print("{:<3} {:<25} {:<15} {:<25} {:<25}".format("ID","Description", "Status", "Created At", "Updated At"))
+    print('-------------------------------------------------------------------------------------------')
     for id, task in data.items():
         if task['status'] in statusPool:
-            print(f'{id}  {task["description"]}\t{task["status"]}\t{task["createdAt"]}\t{task["updatedAt"]}')
+            print("{:<3} {:<25} {:<15} {:<25} {:<25}".format(id,task["description"], task["status"],task["createdAt"],task["updatedAt"]))
+    
+    print('')
 
 
 
@@ -149,23 +154,23 @@ def delete():
 
 def listTasks():
     if len(argv) == 2:
-        print('All Tasks')
+        print('\nAll Tasks')
         printTasks()
         return None
 
     elif len(argv) == 3:
         if argv[2] == 'done':
-            print('Completed Tasks')
+            print('\nCompleted Tasks')
             printTasks(status='done')
             return None
         
         elif argv[2] == 'todo':
-            print('Tasks to do')
+            print('\nTasks to do')
             printTasks(status='todo')
             return None
 
         elif argv[2] == 'in-progress':
-            print('Tasks in Progress')
+            print('\nTasks in Progress')
             printTasks(status='in-progress')
             return None
 
