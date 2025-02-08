@@ -2,17 +2,21 @@
 
 from sys import argv, exit
 from datetime import datetime
-import json
 from json.decoder import JSONDecodeError
+import json
 import os
 
 DATETIME_FORMAT_STR = "%d-%m-%Y %H:%M:%S"
 
+#ABSOLUTE PATH for os and symlink compatibility
 realpath = os.path.realpath(__file__)
 dirname = os.path.dirname(realpath)
 JSONPath = os.path.join(dirname,'data.json')
 
-# helper functions
+
+
+# HELPER FUNCTIONS
+
 def usage():
     print('''
 Available options:
@@ -27,13 +31,16 @@ Available options:
 ''')
     exit(0)
 
+
 def argLengthError():
     print('too many or few arguments, use "python3 main.py help" to check usage')
     exit(0)
 
+
 def invalidArgsError():
     print('invalid arguments, use "python3 main.py help" to check usage')
     exit(0)
+
 
 def initTaskProperties(desc, status='todo'):
     createdAt = datetime.now().strftime(DATETIME_FORMAT_STR)
@@ -42,6 +49,7 @@ def initTaskProperties(desc, status='todo'):
             'createdAt': createdAt,
             'updatedAt': createdAt
             }
+
 
 def updateTaskProperties(task,desc=None,status=None):
     taskUpdate = task.copy()
@@ -52,6 +60,8 @@ def updateTaskProperties(task,desc=None,status=None):
     taskUpdate['updatedAt'] = datetime.now().strftime(DATETIME_FORMAT_STR)
     return taskUpdate
 
+
+#Function to reindex data after deleting a record, to maintain consecutive sequence of IDs
 def getIndexedData(data):
     tasks = data.values()
     l = len(data)
@@ -59,6 +69,7 @@ def getIndexedData(data):
     indexedData = dict(zip(indices,tasks))
     return indexedData
 
+#Read and return data.json as dict, used frequently
 def getJSONData():
     with open(JSONPath,'r') as f:
         try:
@@ -68,14 +79,15 @@ def getJSONData():
             print('Empty task list \nStart by adding a few tasks')
             exit(0)
 
+
 def printTasks(status=None):
-    tabSpace = '\t'
+    #using statusPool as a set for conditional filtering based on task status
+    #also to reduce redundant print statements
+    #status = None, as default implies user did not specify status as condition, where all status is satisfied by statusPool
     if status is None:
         statusPool = ('todo','done','in-progress')
     else:
         statusPool = set([status])
-        if len(status) > 7:
-            tabSpace = '\t\t'
     data = getJSONData()
 
     print('-------------------------------------------------------------------------------------------')
@@ -90,9 +102,7 @@ def printTasks(status=None):
 
 
 
-
-
-# functions
+# FEATURE FUNCTIONS
 
 def add():
     if len(argv) != 3:
@@ -114,6 +124,7 @@ def add():
             f.seek(0)
             json.dump(data,f, indent=4)
             print(f'New Task "{taskName}" \nID: {newIndex} \nADDED')
+
 
 def update():
     if len(argv) != 4:
@@ -163,6 +174,7 @@ def delete():
     
     return None
 
+
 def listTasks():
     if len(argv) == 2:
         print('\nAll Tasks')
@@ -191,7 +203,6 @@ def listTasks():
         argLengthError()
 
 
-
 def markInProgress():
     if len(argv) != 3:
         argLengthError()
@@ -216,6 +227,7 @@ def markInProgress():
 
     return None
 
+
 def markDone():
     if len(argv) != 3:
         argLengthError()
@@ -223,7 +235,7 @@ def markDone():
         taskId = int(argv[2])
     except:
         invalidArgsError()
-    
+
     taskId = str(taskId)
     data = getJSONData()
     if taskId not in data:
@@ -237,13 +249,16 @@ def markDone():
     with open(JSONPath,'w') as f:
         json.dump(data, f, indent=4)
         print(f'task {taskId} marked done')
-    
+
     return None
 
 
+# MAIN FUNCTION
 
 if __name__ == "__main__":
+    #creates a data.json file is it doesn't exist, else opens and closes unmodified
     open(JSONPath,'a').close()
+    
     args = {
         'add': add,
         'update': update,
@@ -261,4 +276,5 @@ if __name__ == "__main__":
         if action not in args:
             invalidArgsError()
         
+        #calling the feature funcntions from args dict
         args[action]()
