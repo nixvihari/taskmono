@@ -20,15 +20,17 @@ JSONPath = os.path.join(dirname,'data.json')
 def usage():
     print('''
 Options:
-    add
-    update
-    delete
+    //ingore the "[]" brackets, used to indicate arguments/user input
+
+    add ["task name/desc"]
+    update [taskId "new task name/desc"]
+    delete [taskId]
     list
     list todo
     list done 
     list in-progress
-    mark-in-progress
-    mark-done
+    mark-in-progress [taskId]
+    mark-done [taskId]
 ''')
     exit(0)
 
