@@ -112,7 +112,8 @@ def add():
         argLengthError()
     taskName = argv[2]
     newTask = initTaskProperties(desc=taskName)
-    if os.stat(JSONPath).st_size == 0:
+    data = getJSONData()
+    if os.stat(JSONPath).st_size == 0 or data == {}:
         data = {1: newTask}
         with open(JSONPath,'w') as f:
             json.dump(data, f, indent=4)
