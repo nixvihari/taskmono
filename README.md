@@ -2,13 +2,18 @@
 
 ---
 
+![Taskmono_help](./static/demo/taskmono_help.png)
+
+![Taskmono_demo](./static/demo/taskmono_demo.png)
+
+
+---
+
 Taskmono is a Command Line Task Tracking app, where you can,
 
 - Add, update and delete tasks
 - Mark them in-progress or done
 - display all, todo, in-progress or completed tasks
-
-![Taskmono_demo](./static/demo/taskmono_demo.png)
 
 
 ### Contents
@@ -17,6 +22,8 @@ Taskmono is a Command Line Task Tracking app, where you can,
     - [Contents](#contents)
     - [Installation (UNIX/Linux)](#installation-unixlinux)
     - [Usage](#usage)
+
+
 
 ### Installation (UNIX/Linux)
 
