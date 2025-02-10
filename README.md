@@ -70,6 +70,18 @@ However by installing, you can run the task tracker program using the `taskmono`
         
         $taskmono help
 
+
+9. Use alias for quick command (Optional)
+
+    Ex: Add the following line of code in `.zshrc` or `.bashrc`
+
+        alias tm="taskmono"
+
+    Now run taskmono using `tm`
+
+        $tm list
+
+
 ---
 ### Usage
 
