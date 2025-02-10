@@ -93,12 +93,12 @@ def printTasks(status=None):
         statusPool = set([status])
     data = getJSONData()
 
-    print('-------------------------------------------------------------------------------------------')
-    print("{:<3} {:<25} {:<15} {:<25} {:<25}".format("ID","Description", "Status", "Created At", "Updated At"))
-    print('-------------------------------------------------------------------------------------------')
+    print('-----------------------------------------------------------------------------------------------------------')
+    print("{:<3} {:<40} {:<15} {:<25} {:<25}".format("ID","Description", "Status", "Created At", "Updated At"))
+    print('-----------------------------------------------------------------------------------------------------------')
     for id, task in data.items():
         if task['status'] in statusPool:
-            print("{:<3} {:<25} {:<15} {:<25} {:<25}".format(id,task["description"], task["status"],task["createdAt"],task["updatedAt"]))
+            print("{:<3} {:<40} {:<15} {:<25} {:<25}".format(id,task["description"], task["status"],task["createdAt"],task["updatedAt"]))
     
     print('')
 
